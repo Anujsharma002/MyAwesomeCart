@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product View</title>
+</head>
+<body>
+<!--{% load static %}-->
+
+ {% for pro in product %}
+{% if pro.image %}
+ <img src="{{ pro.image.url }}" alt="h" width="100px">
+<br>
+ {{ pro.product_name }}
+ <br>
+{{ pro.desc }}
+<!--{{ pro.image }}-->
+ <br>
+{% endif %}
+ {% endfor %}
+
+</body>
+</html>
