@@ -26,16 +26,16 @@ def index(request):
 def about(reqeust):
     return render(reqeust,'shop/about.html')
 def contact(reqeust):
-    return HttpResponse("i am in contact")
+    return render(reqeust, 'shop/contact.html')
 def tracker(reqeust):
-    return HttpResponse("i am in tracker")
+    return render(reqeust, 'shop/tracker.html')
 
 def search(reqeust):
-    return HttpResponse("i am in search")
-def productView(reqeust):
+    return render(reqeust, 'shop/search.html')
+def productView(reqeust,myid):
     print(Product)
-    product = Product.objects.all()
+    prod = Product.objects.filter(id=myid)
     # pr = Product.objects.get(product_id = Product.product_id)
-    return render(reqeust,'shop/prod.html',{'product':product},None)
+    return render(reqeust,'shop/prod.html',{'product':prod[0]})
 def checkout(reqeust):
-    return HttpResponse("i am in checkout")
+    return render(reqeust, 'shop/checkout.html')

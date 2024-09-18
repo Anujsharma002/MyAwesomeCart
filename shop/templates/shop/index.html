@@ -98,8 +98,10 @@ align-items:center;
                     {%else%}
                     <p class="card-text">{{i.desc|slice:20}}<br>...</p>
                     {% endif %}
+                    <span class = "pricetag" style="margin:10px;"><b>₹{{i.price}}/-</b></span><br>
                   <button  id="pr{{i.id}}" class="btn btn-primary cart">Add to cart</button>
-                    <span class = "pricetag">₹{{i.price}}</span>
+                    <a href="/shop/product/{{i.id}}"><button  id="qr{{i.id}}" class="btn btn-primary cart">Quick View</button></a>
+
                 </div>
               </div>
             </div>
