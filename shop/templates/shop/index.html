@@ -72,7 +72,7 @@ align-items:center;
 {% for product,range,len_product in allProd %}
 
 
-<div class="container" xmlns:data="http://www.w3.org/1999/xhtml">
+<div class="container"  xmlns:data="http://www.w3.org/1999/xhtml">
     <h3>{{product.0.category}}</h3>
     <div class="row">
     <div id="demo{{forloop.counter}}" class=" col carousel slide my-3" data-ride="carousel">'
@@ -92,7 +92,7 @@ align-items:center;
               <div class="card" style="width: 18rem;">
                 <img src='{{i.image.url}}' class="card-img-top" alt="...">
                 <div class="card-body">
-                  <h5 class="card-title">{{i.product_name|slice:20}}...</h5>
+                  <h5 class="card-title" id = "namepr{{i.id}}">{{i.product_name}}</h5>
                     {% if  i.desc|length > 20 %}
                   <p class="card-text">{{i.desc|slice:48}}...</p>
                     {%else%}
@@ -100,7 +100,7 @@ align-items:center;
                     {% endif %}
                     <span class = "pricetag" style="margin:10px;"><b>₹{{i.price}}/-</b></span><br>
                   <button  id="pr{{i.id}}" class="btn btn-primary cart">Add to cart</button>
-                    <a href="/shop/product/{{i.id}}"><button  id="qr{{i.id}}" class="btn btn-primary cart">Quick View</button></a>
+                    <a href="/shop/product/{{i.id}}"><button  id="view{{i.id}}" class="btn btn-primary">Quick View</button></a>
 
                 </div>
               </div>
@@ -130,6 +130,7 @@ align-items:center;
  {% block js%}
 <script>
 console.log('working');
+
 if(localStorage.getItem('cart') == null){
 var cart = {};
 }
@@ -143,16 +144,36 @@ console.log('clicked');
 var idstr = this.id.toString();
 console.log(idstr);
 if (cart[idstr] !=undefined){
-cart[idstr] = cart[idstr] + 1;
+qty = cart[idstr][0] + 1;
+Name = document.getElementById('name' + idstr).innerHTML;
+cart[idstr] = [qty,Name];
 }
 else
 {
-cart[idstr] = 1;
+qty = 1;
+Name = document.getElementById('name' + idstr).innerHTML;
+cart[idstr] = [qty,Name];
 }
 console.log(cart);
 localStorage.setItem('cart', JSON.stringify(cart));
-document.getElementById('cart').innerHTML = Object.keys(cart).length;
+var sum = 0;
+for (item in cart) {
+    let qty = cart[item][0];
+    sum = sum+qty;
+    }
+<!--document.getElementById('cart').innerHTML = Object.keys(cart).length;-->
+    document.getElementById('cart').innerHTML = sum;
+
 });
+$('#popcart').popover();
+
+function del(){
+<!-- localStorage.setItem('cart', JSON.stringify(cart));-->
+ localStorage.clear();
+ cart = {};
+}
+var popstr = '<span><a href="/shop/checkout"><div class = "btn btn-primary">Checkout</div></a></span> <span id = "clear"><div class = "btn btn-primary clear" onclick="del()">Clear Cart</div></span>';
+document.getElementById("popcart").setAttribute('data-content', popstr);
 
 </script>
 {% endblock %}

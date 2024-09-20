@@ -42,7 +42,10 @@ console.log(cart);
 localStorage.setItem('cart', JSON.stringify(cart));
 document.getElementById('cart').innerHTML = Object.keys(cart).length;
 });
+$('#popcart').popover();
+var popstr = '<span><a href="/shop/checkout"><div class = "btn btn-primary">Checkout</div></a></span> <span id = "clear"><div class = "btn btn-primary">Clear Cart</div></span>';
 
+document.getElementById("popcart").setAttribute('data-content', popstr);
 </script>
 
 

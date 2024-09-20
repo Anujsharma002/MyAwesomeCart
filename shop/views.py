@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
 from django.http import HttpResponse
-from .models import Product
+from .models import Product,Contact
 from math import ceil
 # Create your views here.
 def index(request):
@@ -26,6 +28,15 @@ def index(request):
 def about(reqeust):
     return render(reqeust,'shop/about.html')
 def contact(reqeust):
+    if reqeust.method == "POST":
+        # print(reqeust)
+        name = reqeust.POST.get('name','')
+        email = reqeust.POST.get('email','')
+        phone = reqeust.POST.get('phone','')
+        message= reqeust.POST.get('message','')
+        contact=Contact(name=name,email=email,phone=phone,message=message)
+        contact.save()
+        send_mail(f"message from name:{name} user:{email}", message,settings.EMAIL_HOST_USER, [settings.EMAIL_HOST_USER])
     return render(reqeust, 'shop/contact.html')
 def tracker(reqeust):
     return render(reqeust, 'shop/tracker.html')
