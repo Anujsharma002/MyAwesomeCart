@@ -61,6 +61,9 @@ align-items:center;
 
 
 }
+.card-title{
+font-weight:700;
+}
     {% endblock %}
 {% block body %}
 {% load static %}
@@ -98,7 +101,8 @@ align-items:center;
                     {%else%}
                     <p class="card-text">{{i.desc|slice:20}}<br>...</p>
                     {% endif %}
-                    <span class = "pricetag" style="margin:10px;"><b>₹{{i.price}}/-</b></span><br>
+                    <span><b>Price:</b></span>
+                    <span class = "pricetag card-title" style="margin:10px;" id = pricepr{{i.id}}>{{i.price}}</span><br>
                   <button  id="pr{{i.id}}" class="btn btn-primary cart">Add to cart</button>
                     <a href="/shop/product/{{i.id}}"><button  id="view{{i.id}}" class="btn btn-primary">Quick View</button></a>
 
@@ -146,13 +150,16 @@ console.log(idstr);
 if (cart[idstr] !=undefined){
 qty = cart[idstr][0] + 1;
 Name = document.getElementById('name' + idstr).innerHTML;
-cart[idstr] = [qty,Name];
+price = document.getElementById('price' + idstr).innerHTML;
+cart[idstr] = [qty,Name,price];
 }
 else
 {
 qty = 1;
 Name = document.getElementById('name' + idstr).innerHTML;
-cart[idstr] = [qty,Name];
+price = document.getElementById('price' + idstr).innerHTML;
+
+cart[idstr] = [qty,Name,price];
 }
 console.log(cart);
 localStorage.setItem('cart', JSON.stringify(cart));

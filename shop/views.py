@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse
-from .models import Product,Contact
+from .models import Product,Contact,Order,Orderupdate
 from math import ceil
+import json
 # Create your views here.
 def index(request):
     # print(Product)
@@ -39,6 +40,24 @@ def contact(reqeust):
         send_mail(f"message from name:{name} user:{email}", message,settings.EMAIL_HOST_USER, [settings.EMAIL_HOST_USER])
     return render(reqeust, 'shop/contact.html')
 def tracker(reqeust):
+    if reqeust.method == "POST":
+        orderId = reqeust.POST.get('orderId', '')
+        email = reqeust.POST.get('email', '')
+        try:
+            order = Order.objects.filter(order_id=orderId, email=email)
+            if len(order) > 0:
+                update = Orderupdate.objects.filter(order_id=orderId)
+                updates = []
+                for item in update:
+                    updates.append({'text': item.update_desc, 'time': item.timestamp})
+                    response = json.dumps([updates,order[0].text_json], default=str)
+                return HttpResponse(response)
+            else:
+                return HttpResponse('{}')
+        except Exception as e:
+            return HttpResponse('{}')
+
+        return render(reqeust, 'shop/tracker.html')
     return render(reqeust, 'shop/tracker.html')
 
 def search(reqeust):
@@ -49,4 +68,23 @@ def productView(reqeust,myid):
     # pr = Product.objects.get(product_id = Product.product_id)
     return render(reqeust,'shop/prod.html',{'product':prod[0]})
 def checkout(reqeust):
+    thank = False
+    id = 0
+    if reqeust.method == "POST":
+     text_json = reqeust.POST.get('itemsJson','')
+     name = reqeust.POST.get('name', '')
+     email = reqeust.POST.get('email', '')
+     add1 =  reqeust.POST.get('address1', '') + ' ' + reqeust.POST.get('address2', '')
+     city = reqeust.POST.get('city', '')
+     state = reqeust.POST.get('state', '')
+     phone = reqeust.POST.get('phone', '')
+     zip_code = reqeust.POST.get('zip', '')
+     print(text_json)
+     order = Order(name=name, email=email, phone=phone, text_json = text_json,address =add1,city= city,state=state,zip_code=zip_code)
+     order.save()
+     update = Orderupdate(order_id=order.order_id, update_desc="The order has been placed")
+     update.save()
+     thank = True
+     id = order.order_id
+     return render(reqeust, 'shop/checkout.html',{"thank": thank,"id": id})
     return render(reqeust, 'shop/checkout.html')
